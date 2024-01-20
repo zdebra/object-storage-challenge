@@ -1,9 +1,12 @@
-FROM golang:1.15
-WORKDIR /mnt/homework
+FROM golang:1.21 AS build-stage 
+WORKDIR /app
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 COPY . .
-RUN go build
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/app main.go
 
-# Docker is used as a base image so you can easily start playing around in the container using the Docker command line client.
 FROM docker
-COPY --from=0 /mnt/homework/homework-object-storage /usr/local/bin/homework-object-storage
-RUN apk add bash curl
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+COPY --from=build-stage /go/bin/app /go/bin/app
+ENTRYPOINT [ "/go/bin/app" ]
