@@ -40,7 +40,7 @@ services:
     command: sleep 36000 # Changeme: Put in just so the container stays on after being started.
     ports: [ "3000:3000" ]
     networks:
-      amazin-object-storage:
+      amazin-object-storage :
         ipv4_address: 169.253.0.5
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock

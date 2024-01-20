@@ -1,0 +1,51 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Storage Gateway API
+  description: An API for S3 compatible storage gateway
+servers:
+  - url: 'localhost:3000'
+    description: Localhost server
+paths:
+  /object/{id}:
+    put:
+      operationId: object-put
+      description: Put object
+      parameters:
+        - name: id
+          in: path
+          description: unique object id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: data
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: byte
+      responses:
+        '200':
+          description: OK
+    get:
+      operationId: object-get
+      description: Get object
+      parameters:
+        - name: id
+          in: path
+          description: unique object id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stored data stream
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: byte
+        '404':
+          description: Object doesn't exist
