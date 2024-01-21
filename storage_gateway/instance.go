@@ -17,7 +17,7 @@ func (i *StorageInstance) String() string {
 	return i.id
 }
 
-func NewStorageInstance(endpoint, accessKeyID, secretAccessKey string) *StorageInstance {
+func newStorageInstance(endpoint, accessKeyID, secretAccessKey string) *StorageInstance {
 	minioClient, err := minio.New(endpoint, &minio.Options{
 		Creds: credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
 	})
@@ -49,4 +49,12 @@ func ensureBucketIsCreated(ctx context.Context, minioClient *minio.Client, bucke
 		return fmt.Errorf("create bucket: %w", err)
 	}
 	return nil
+}
+
+func InitInstances(cfgs []InstanceCfg) []*StorageInstance {
+	instances := []*StorageInstance{}
+	for _, cfg := range cfgs {
+		instances = append(instances, newStorageInstance(cfg.Endpoint, cfg.AccessKey, cfg.SecretKey))
+	}
+	return instances
 }

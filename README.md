@@ -40,7 +40,7 @@ Good luck!
 
 todo
 - [ ] logging
-- [ ] automatize finding minio instances
+- [x] automatize finding minio instances
 - [ ] tests
 - [ ] uniform hashing
-- [ ] refactor code structre
+- [x] refactor code structre

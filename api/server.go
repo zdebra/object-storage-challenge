@@ -21,15 +21,9 @@ type MinioInstanceCfg struct {
 }
 
 func (s *Server) Run(ctx context.Context) {
-	// todo: put this elsewhere
-	cfgs := storagegateway.DiscoverMinioInstancesInDocker(ctx)
-
-	instances := []*storagegateway.StorageInstance{}
-	for _, cfg := range cfgs {
-		instances = append(instances, storagegateway.NewStorageInstance(cfg.Endpoint, cfg.AccessKey, cfg.SecretKey))
-	}
-
-	service := storagegateway.NewService(instances...)
+	discoveredConfigs := storagegateway.DiscoverMinioInstancesInDocker(ctx)
+	minioInstances := storagegateway.InitInstances(discoveredConfigs)
+	service := storagegateway.NewService(minioInstances...)
 	storageGatewayAPI := StorageGatewayAPI{
 		service: service,
 	}
