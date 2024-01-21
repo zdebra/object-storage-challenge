@@ -7,14 +7,48 @@ import (
 	"time"
 
 	genserver "github.com/spacelift-io/homework-object-storage/gen-server"
+	storagegateway "github.com/spacelift-io/homework-object-storage/storage_gateway"
 )
 
 type Server struct {
 	Addr string
 }
 
+type MinioInstanceCfg struct {
+	AccessKey string
+	SecretKey string
+	Endpoint  string
+}
+
 func (s *Server) Run(ctx context.Context) {
-	storageGatewayAPI := StorageGatewayAPI{}
+
+	cfgs := []MinioInstanceCfg{
+		{
+			AccessKey: "ring",
+			SecretKey: "treepotato",
+			Endpoint:  "169.253.0.2",
+		},
+		{
+			AccessKey: "maglev",
+			SecretKey: "baconpapaya",
+			Endpoint:  "169.253.0.3",
+		},
+		{
+			AccessKey: "rendezvous",
+			SecretKey: "bluegreen",
+			Endpoint:  "169.253.0.4",
+		},
+	}
+
+	instances := []*storagegateway.StorageInstance{}
+	for _, cfg := range cfgs {
+		instances = append(instances, storagegateway.NewStorageInstance(cfg.Endpoint, cfg.AccessKey, cfg.SecretKey))
+	}
+
+	service := storagegateway.NewService(instances...)
+	storageGatewayAPI := StorageGatewayAPI{
+		service: service,
+	}
 
 	httpServer := http.Server{
 		Addr:    s.Addr,
