@@ -2,13 +2,13 @@ package storagegateway
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 
 	"github.com/buraksezer/consistent"
 	"github.com/minio/minio-go/v7"
 	"github.com/samber/lo"
+	"github.com/spacelift-io/homework-object-storage/common"
 )
 
 const bucketName = "mybucket"
@@ -53,6 +53,7 @@ func (s *Service) GetObject(ctx context.Context, id string) (io.Reader, int64, e
 	}
 
 	obj, err := instance.minioClient.GetObject(ctx, bucketName, id, minio.GetObjectOptions{})
+	// todo: return object not found error
 	if err != nil {
 		return nil, 0, fmt.Errorf("get object: %w", err)
 	}
@@ -68,9 +69,7 @@ func (s *Service) GetObject(ctx context.Context, id string) (io.Reader, int64, e
 func (s *Service) findInstance(id string) (*StorageInstance, error) {
 	instance := s.keyLocator.LocateKey([]byte(id))
 	if instance == nil {
-		return nil, ErrInstanceNotFound
+		return nil, common.ErrInstanceNotFound
 	}
 	return instance.(*StorageInstance), nil
 }
-
-var ErrInstanceNotFound = errors.New("instance not found")
