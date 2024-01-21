@@ -58,7 +58,7 @@ func (s *Service) GetObject(ctx context.Context, id string) (io.Reader, int64, e
 	}
 
 	stat, err := obj.Stat()
-	if err.Error() == "The specified key does not exist." {
+	if err != nil && err.Error() == "The specified key does not exist." {
 		return nil, 0, common.ErrObjectNotFound
 	}
 	if err != nil {

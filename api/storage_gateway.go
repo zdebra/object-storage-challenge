@@ -31,8 +31,8 @@ func (sga *StorageGatewayAPI) ObjectGet(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", size))
+	w.WriteHeader(http.StatusOK)
 	io.Copy(w, dataStream)
 }
 
