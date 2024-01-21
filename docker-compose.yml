@@ -3,7 +3,7 @@ version: "3.7"
 services:
   amazin-object-storage-node-1: &object-storage-node
     image: minio/minio
-    command: server --console-address ":9001" /tmp/data
+    command: server --address ":9000" --console-address ":9001" /tmp/data
     ports: ["9001:9001"] # You can open localhost:9001 in your browser to debug what objects are on this node.
     networks:
       amazin-object-storage:

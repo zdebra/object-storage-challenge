@@ -22,23 +22,7 @@ type MinioInstanceCfg struct {
 
 func (s *Server) Run(ctx context.Context) {
 	// todo: put this elsewhere
-	cfgs := []MinioInstanceCfg{
-		{
-			AccessKey: "ring",
-			SecretKey: "treepotato",
-			Endpoint:  "169.253.0.2:9000",
-		},
-		{
-			AccessKey: "maglev",
-			SecretKey: "baconpapaya",
-			Endpoint:  "169.253.0.3:9000",
-		},
-		{
-			AccessKey: "rendezvous",
-			SecretKey: "bluegreen",
-			Endpoint:  "169.253.0.4:9000",
-		},
-	}
+	cfgs := storagegateway.DiscoverMinioInstancesInDocker(ctx)
 
 	instances := []*storagegateway.StorageInstance{}
 	for _, cfg := range cfgs {
