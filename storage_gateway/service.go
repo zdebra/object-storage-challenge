@@ -53,12 +53,14 @@ func (s *Service) GetObject(ctx context.Context, id string) (io.Reader, int64, e
 	}
 
 	obj, err := instance.minioClient.GetObject(ctx, bucketName, id, minio.GetObjectOptions{})
-	// todo: return object not found error
 	if err != nil {
 		return nil, 0, fmt.Errorf("get object: %w", err)
 	}
 
 	stat, err := obj.Stat()
+	if err.Error() == "The specified key does not exist." {
+		return nil, 0, common.ErrObjectNotFound
+	}
 	if err != nil {
 		return nil, 0, fmt.Errorf("stat object: %w", err)
 	}
