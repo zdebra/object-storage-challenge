@@ -33,7 +33,7 @@ func NewService(instances ...*StorageInstance) *Service {
 }
 
 func (s *Service) PutObject(ctx context.Context, id string, dataStream io.Reader, dataSize int64) error {
-	instance, err := s.findInstance(id)
+	instance, err := s.findInstanceForKey(id)
 	if err != nil {
 		return fmt.Errorf("find instance: %w", err)
 	}
@@ -49,7 +49,7 @@ func (s *Service) PutObject(ctx context.Context, id string, dataStream io.Reader
 }
 
 func (s *Service) GetObject(ctx context.Context, id string) (io.Reader, int64, error) {
-	instance, err := s.findInstance(id)
+	instance, err := s.findInstanceForKey(id)
 	if err != nil {
 		return nil, 0, fmt.Errorf("find instance: %w", err)
 	}
@@ -71,7 +71,7 @@ func (s *Service) GetObject(ctx context.Context, id string) (io.Reader, int64, e
 	return obj, stat.Size, nil
 }
 
-func (s *Service) findInstance(id string) (*StorageInstance, error) {
+func (s *Service) findInstanceForKey(id string) (*StorageInstance, error) {
 	instance := s.keyLocator.LocateKey([]byte(id))
 	if instance == nil {
 		return nil, common.ErrInstanceNotFound

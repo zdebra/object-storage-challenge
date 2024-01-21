@@ -38,11 +38,3 @@ docker-compose up --build
 ```
 
 Good luck!
-
-todo
-
-- [x] logging
-- [x] automatize finding minio instances
-- [ ] tests
-- [x] uniform hashing
-- [x] refactor code structre
