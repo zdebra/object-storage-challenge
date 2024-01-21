@@ -8,8 +8,9 @@ You can assume that the set of Minio instances doesn't change in a "test scenari
 
 As you're task you'll be creating a simple **stateless** distributed Object Storage Gateway, listening on HTTP port 3000.
 As its main functionality it should offer two endpoints:
- - **PUT** */object/{id}* - The request body should be used as the object body. If the file already exists, you should either overwrite it, or return an error, your choice.
- - **GET** */object/{id}* - Should respond with the object body, or return code 404 if it doesn't exist.
+
+- **PUT** _/object/{id}_ - The request body should be used as the object body. If the file already exists, you should either overwrite it, or return an error, your choice.
+- **GET** _/object/{id}_ - Should respond with the object body, or return code 404 if it doesn't exist.
 
 When handling a get or put request, you should consistently (wrt the ID) choose one of the Minio instances and use it to serve the request.
 You should use varying Minio instances depending on the ID.
@@ -31,16 +32,17 @@ There's a docker-compose.yml file included you can use as a starting point. The 
 Feel free to modify the docker-compose.yml file, as well as the Dockerfile, as you see fit.
 
 The project should work out of the box using
+
 ```
 docker-compose up --build
 ```
 
 Good luck!
 
-
 todo
+
 - [x] logging
 - [x] automatize finding minio instances
 - [ ] tests
-- [ ] uniform hashing
+- [x] uniform hashing
 - [x] refactor code structre

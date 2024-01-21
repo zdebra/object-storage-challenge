@@ -9,6 +9,7 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/samber/lo"
 	"github.com/spacelift-io/homework-object-storage/common"
+	"go.uber.org/zap"
 )
 
 const bucketName = "mybucket"
@@ -22,10 +23,9 @@ func NewService(instances ...*StorageInstance) *Service {
 		panic("no storage instance provided")
 	}
 	cfg := consistent.Config{
-		PartitionCount:    len(instances),
-		ReplicationFactor: 20,
-		Load:              1.25,
-		Hasher:            hasher{},
+		PartitionCount: len(instances),
+		Load:           0.1,
+		Hasher:         hasher{},
 	}
 
 	keyLocator := consistent.New(lo.Map(instances, func(x *StorageInstance, _ int) consistent.Member { return x }), cfg)
@@ -42,6 +42,8 @@ func (s *Service) PutObject(ctx context.Context, id string, dataStream io.Reader
 	if err != nil {
 		return fmt.Errorf("put object: %w", err)
 	}
+
+	zap.L().Info("object put", zap.String("id", id), zap.String("instance", instance.String()))
 
 	return nil
 }
@@ -65,6 +67,7 @@ func (s *Service) GetObject(ctx context.Context, id string) (io.Reader, int64, e
 		return nil, 0, fmt.Errorf("stat object: %w", err)
 	}
 
+	zap.L().Info("object get", zap.String("id", id), zap.String("instance", instance.String()))
 	return obj, stat.Size, nil
 }
 
