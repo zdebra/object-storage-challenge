@@ -2,22 +2,18 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/gorilla/handlers"
 	genserver "github.com/spacelift-io/homework-object-storage/gen-server"
 	storagegateway "github.com/spacelift-io/homework-object-storage/storage_gateway"
+	"go.uber.org/zap"
 )
 
 type Server struct {
 	Addr string
-}
-
-type MinioInstanceCfg struct {
-	AccessKey string
-	SecretKey string
-	Endpoint  string
 }
 
 func (s *Server) Run(ctx context.Context) {
@@ -30,7 +26,7 @@ func (s *Server) Run(ctx context.Context) {
 
 	httpServer := http.Server{
 		Addr:    s.Addr,
-		Handler: genserver.Handler(&storageGatewayAPI),
+		Handler: handlers.LoggingHandler(os.Stdout, genserver.Handler(&storageGatewayAPI)),
 	}
 
 	go func() {
@@ -43,7 +39,7 @@ func (s *Server) Run(ctx context.Context) {
 		}
 	}()
 
-	fmt.Println("server is running on", s.Addr)
+	zap.L().Info("server started", zap.String("addr", s.Addr))
 	<-ctx.Done()
 
 	// attempt to gracefully shutdown the server
@@ -54,7 +50,7 @@ func (s *Server) Run(ctx context.Context) {
 		if err != nil {
 			panic(err.Error())
 		}
-		fmt.Println("server gracefully stopped")
+		zap.L().Info("server gracefully stopped")
 	}
 
 }

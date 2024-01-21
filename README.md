@@ -39,7 +39,7 @@ Good luck!
 
 
 todo
-- [ ] logging
+- [x] logging
 - [x] automatize finding minio instances
 - [ ] tests
 - [ ] uniform hashing
